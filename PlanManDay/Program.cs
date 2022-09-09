@@ -28,7 +28,7 @@ namespace PlanManDay
             List<string> listMilestone = new List<string>();
             listMilestone = InputMilestones();
 
-            //list holiday
+            //list holiday from server
             List<DateTime> holidays = new List<DateTime>();
             holidays = InputHolidays();
 
@@ -76,7 +76,7 @@ namespace PlanManDay
                                     .Select(s => s.manday)
                                     .FirstOrDefault();  //get man day of milestone
                                 get_milestone = listMilestone[j];
-                                if (get_manday > 0 && input_jobs[m].job == engineers[k].job)
+                                if (get_manday > 0 && input_jobs[m].job == engineers[k].job) // check match job and more manday 
                                 {
                                     get_engs.Add(new Engineers()
                                     {
@@ -313,7 +313,6 @@ namespace PlanManDay
                     },
                 }
             });
-
             engs.Add(new InputEngineerModel()
             {
                 name = "A",
@@ -333,7 +332,7 @@ namespace PlanManDay
                     new INPUTENG_MILESTONE()
                     {
                         milestone = "GEN",
-                        manday = 1
+                        manday = 5
                     },
                     new INPUTENG_MILESTONE()
                     {
@@ -348,7 +347,7 @@ namespace PlanManDay
                     new INPUTENG_MILESTONE()
                     {
                         milestone = "HANDOVER",
-                        manday = 1
+                        manday = 2
                     },
                 }
             });
@@ -361,7 +360,7 @@ namespace PlanManDay
                     new INPUTENG_MILESTONE ()
                     {
                         milestone = "KOM",
-                        manday = 2,
+                        manday = 1,
                     },
                     new INPUTENG_MILESTONE()
                     {
@@ -380,6 +379,11 @@ namespace PlanManDay
                     },
                     new INPUTENG_MILESTONE()
                     {
+                        milestone = "TEST",
+                        manday = 0
+                    },
+                    new INPUTENG_MILESTONE()
+                    {
                         milestone = "SITE",
                         manday = 0
                     },
@@ -390,7 +394,6 @@ namespace PlanManDay
                     },
                 }
             });
-
             engs.Add(new InputEngineerModel()
             {
                 name = "C",
@@ -416,6 +419,11 @@ namespace PlanManDay
                     {
                         milestone = "FAT",
                         manday = 2
+                    },
+                    new INPUTENG_MILESTONE()
+                    {
+                        milestone = "TEST",
+                        manday = 0
                     },
                     new INPUTENG_MILESTONE()
                     {
@@ -449,6 +457,82 @@ namespace PlanManDay
                     {
                         milestone = "GEN",
                         manday = 15
+                    },
+                    new INPUTENG_MILESTONE()
+                    {
+                        milestone = "FAT",
+                        manday = 2
+                    },
+                    new INPUTENG_MILESTONE()
+                    {
+                        milestone = "SITE",
+                        manday = 3
+                    },
+                    new INPUTENG_MILESTONE()
+                    {
+                        milestone = "HANDOVER",
+                        manday = 2
+                    },
+                }
+            });
+            engs.Add(new InputEngineerModel()
+            {
+                name = "Kriangkrai",
+                job = "J22-8888",
+                milestones = new List<INPUTENG_MILESTONE>()
+                {
+                    new INPUTENG_MILESTONE ()
+                    {
+                        milestone = "KOM",
+                        manday = 2,
+                    },
+                    new INPUTENG_MILESTONE()
+                    {
+                        milestone = "DOC",
+                        manday = 2
+                    },
+                    new INPUTENG_MILESTONE()
+                    {
+                        milestone = "GEN",
+                        manday = 5
+                    },
+                    new INPUTENG_MILESTONE()
+                    {
+                        milestone = "FAT",
+                        manday = 2
+                    },
+                    new INPUTENG_MILESTONE()
+                    {
+                        milestone = "SITE",
+                        manday = 3
+                    },
+                    new INPUTENG_MILESTONE()
+                    {
+                        milestone = "HANDOVER",
+                        manday = 2
+                    },
+                }
+            });
+            engs.Add(new InputEngineerModel()
+            {
+                name = "Kriangkrai",
+                job = "J22-9999",
+                milestones = new List<INPUTENG_MILESTONE>()
+                {
+                    new INPUTENG_MILESTONE ()
+                    {
+                        milestone = "KOM",
+                        manday = 1,
+                    },
+                    new INPUTENG_MILESTONE()
+                    {
+                        milestone = "DOC",
+                        manday = 2
+                    },
+                    new INPUTENG_MILESTONE()
+                    {
+                        milestone = "GEN",
+                        manday = 10
                     },
                     new INPUTENG_MILESTONE()
                     {
