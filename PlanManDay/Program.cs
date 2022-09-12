@@ -90,21 +90,21 @@ namespace PlanManDay
                                                     .Sum(s1 => s1.manday))
                                             .Sum();
                                             int remain_manday = _month.Value.workday - current_manday;
-                                            //Console.WriteLine($"Month {_month.Key} Name {engineers[k].name} , Work Day {current_manday} , Remain Ma Day {remain_manday}");
+
                                             Engineers eng = new Engineers();
                                             eng.name = engineers[k].name;
                                             eng.job = get_job;
 
                                             int last_manday = 0;
-                                            if (month_starts.Count > 1)
+                                            if (month_starts.Count > 1) // multi month
                                             {
                                                 if (last_month.milestones != null)
                                                 {                                                         
                                                     last_manday = last_month.milestones.Where(w1=>w1.milestone == get_milestone)
                                                        .Select(s => s.engs
                                                            .Where(w => w.job == engineers[k].job && w.name == engineers[k].name)
-                                                           .Select(s1 => s1.manday).FirstOrDefault())
-                                                    .FirstOrDefault();
+                                                           .Select(s1 => s1.manday).Sum())
+                                                    .Sum();
                                                 }
                                             }
                                             if (remain_manday >= get_manday)
@@ -134,23 +134,13 @@ namespace PlanManDay
                     }
                 }
                 month = new MONTHS();
-
                 month.workday = _month.Value.workday;
                 month.month = _month.Value.month.ToString("yyyy-MM");
                 month.milestones = output_milestones;
 
                 last_month = month;
 
-                //for (int n = 0; n < last_month.milestones.Count; n++)
-                //{
-                //    Console.WriteLine($"Month {last_month.month} , Milestone {last_month.milestones[n].milestone}");
-                //    for (int y = 0; y < last_month.milestones[n].engs.Count; y++)
-                //    {
-                //        Console.WriteLine($"Name {last_month.milestones[n].engs[y].name} ManDay {last_month.milestones[n].engs[y].manday}");
-                //    }
-                //}
                 output.months.Add(month);
-
             }
   
             #endregion Calculate
@@ -172,20 +162,7 @@ namespace PlanManDay
                         Console.WriteLine($"Name : [{output.months[i].milestones[j].engs[m].name}] , Man Day : [{output.months[i].milestones[j].engs[m].manday}] ,Job : [{output.months[i].milestones[j].engs[m].job}]");
                     }
                 }
-                //for(int j=0;j<output.months[i].workday_engineer.Count;j++)
-                //{
-                //    Console.WriteLine($"Name {output.months[i].workday_engineer[j].name} , All Man Day {output.months[i].workday_engineer[j].all_manday}");
-
-                //}
             }
-
-            //for (int ii = 0; ii < output.months.Count; ii++)
-            //{
-            //    for (int k = 0; k < output.months[ii].workday_engineer.Count; k++)
-            //    {
-            //        Console.WriteLine($"Name {output.months[ii].workday_engineer[k].name} , All Manday {output.months[ii].workday_engineer[k].all_manday}");
-            //    }
-            //}
             Console.ReadLine();
         }
         public static List<InputJobModel> InputJobs()
