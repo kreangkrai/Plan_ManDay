@@ -14,5 +14,6 @@ namespace PlanManDay
         public string milestone { get; set; }
         public DateTime date_start { get; set; }
         public DateTime date_stop { get; set; }
+        public List<DateTime> duration_months { get; set; }
     }
 }

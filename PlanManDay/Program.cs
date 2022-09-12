@@ -42,18 +42,19 @@ namespace PlanManDay
             string get_milestone = "";
             string get_job = "";
             MONTHS month = new MONTHS();
+           // WorkDay_Engineer sum_engineer = new WorkDay_Engineer();
             List<OUTPUT_MILESTONE> output_milestones = new List<OUTPUT_MILESTONE>();
             OutputModel output = new OutputModel();
 
             Dictionary<string, WorkDayOfMonthModel> has_months = new Dictionary<string, WorkDayOfMonthModel>();
             has_months = DataWorkDayOfMonth(input_jobs, holidays);
 
-
+            MONTHS last_month = new MONTHS();
             #region Calculate
 
             ///////   Calculate //////////////
             foreach (var _month in has_months)//each month
-            {
+            {               
                 output_milestones = new List<OUTPUT_MILESTONE>();
                 for (int j = 0; j < listMilestone.Count; j++)  // each milestone; have engineer? , manday ? 
                 {
@@ -62,48 +63,97 @@ namespace PlanManDay
                     get_job = "";
                     for (int m = 0; m < input_jobs.Count; m++)
                     {
-                        DateTime date_start = input_jobs[m].milestones
-                                .Where(w => w.milestone == listMilestone[j])
-                                .Select(s => s.date_start).FirstOrDefault(); //get date start of milestone
-
-                        if (_month.Key.Contains(date_start.ToString("yyyy-MM")))
+                        List<DateTime> month_starts = input_jobs[m].milestones
+                            .Where(w => w.milestone == listMilestone[j])
+                            .Select(s => s.duration_months
+                            .ToList())
+                            .FirstOrDefault();
+                        if (month_starts != null)
                         {
-                            int sum_workday = output_milestones.Select(s => s.engs.Select(x => x.manday).Sum()).Sum();  //  current sum all engineer of milestone                           
-                            for (int k = 0; k < engineers.Count; k++) //each engineer
+                            foreach (var month_ in month_starts)  //month in each milestone
                             {
-                                get_job = engineers[k].job;
-                                int get_manday = engineers[k].milestones.Where(w => w.milestone == listMilestone[j])
-                                    .Select(s => s.manday)
-                                    .FirstOrDefault();  //get man day of milestone
-                                get_milestone = listMilestone[j];
-                                if (get_manday > 0 && input_jobs[m].job == engineers[k].job) // check match job and more manday 
+                                if (_month.Key.Contains(month_.ToString("yyyy-MM")))
                                 {
-                                    get_engs.Add(new Engineers()
+                                    for (int k = 0; k < engineers.Count; k++) //each engineer
                                     {
-                                        name = engineers[k].name,
-                                        job = get_job,
-                                        manday = get_manday
-                                    });
-                                }
-                            }
-                            output_milestones.Add(new OUTPUT_MILESTONE()
-                            {
-                                milestone = get_milestone,
-                                engs = get_engs
-                            });
-                        }
-                    }
-                    month = new MONTHS()
-                    {
-                        workday = _month.Value.workday,
-                        month = _month.Value.month.ToString("yyyy-MM"),
-                        milestones = output_milestones,
-                        all_manday = output_milestones.Select(s => s.engs.Sum(x => x.manday)).Sum()
-                    };
-                }
-                output.months.Add(month);
-            }
+                                        get_job = engineers[k].job;
+                                        int get_manday = engineers[k].milestones.Where(w => w.milestone == listMilestone[j])
+                                            .Select(s => s.manday)
+                                            .FirstOrDefault();  //get man day of milestone
+                                        get_milestone = listMilestone[j];
+                                        
+                                        if (get_manday > 0 && input_jobs[m].job == engineers[k].job) // check match job and more manday 
+                                        {
+                                            int current_manday = output_milestones
+                                                .Select(s => s.engs
+                                                    .Where(w => w.name == engineers[k].name)
+                                                    .Sum(s1 => s1.manday))
+                                            .Sum();
+                                            int remain_manday = _month.Value.workday - current_manday;
+                                            //Console.WriteLine($"Month {_month.Key} Name {engineers[k].name} , Work Day {current_manday} , Remain Ma Day {remain_manday}");
+                                            Engineers eng = new Engineers();
+                                            eng.name = engineers[k].name;
+                                            eng.job = get_job;
 
+                                            int last_manday = 0;
+                                            if (month_starts.Count > 1)
+                                            {
+                                                if (last_month.milestones != null)
+                                                {
+                                                    last_manday = last_month.milestones
+                                                       .Select(s => s.engs
+                                                           .Where(w => w.job == engineers[k].job && w.name == engineers[k].name)
+                                                           .Select(s1 => s1.manday).FirstOrDefault())
+                                                    .LastOrDefault();
+                                                }
+                                            }
+
+                                            if (remain_manday >= get_manday)
+                                            {
+                                                eng.manday = get_manday - last_manday;   
+                                            }
+                                            else
+                                            { 
+                                                eng.manday = _month.Value.workday - current_manday;
+                                            }
+                                            get_engs.Add(eng);
+                                        }
+                                    }
+                                    bool check_milestone = output_milestones.Any(w => w.milestone == get_milestone);
+                                    if (!check_milestone)
+                                    {
+                                        output_milestones.Add(new OUTPUT_MILESTONE()
+                                        {
+                                            milestone = get_milestone,
+                                            engs = get_engs
+                                        });
+                                    }
+
+                                }
+                            }                           
+                        }                       
+                    }
+                }
+                month = new MONTHS();
+
+                month.workday = _month.Value.workday;
+                month.month = _month.Value.month.ToString("yyyy-MM");
+                month.milestones = output_milestones;
+
+                last_month = month;
+
+                //for (int n = 0; n < last_month.milestones.Count; n++)
+                //{
+                //    Console.WriteLine($"Month {last_month.month} , Milestone {last_month.milestones[n].milestone}");
+                //    for (int y = 0; y < last_month.milestones[n].engs.Count; y++)
+                //    {
+                //        Console.WriteLine($"Name {last_month.milestones[n].engs[y].name} ManDay {last_month.milestones[n].engs[y].manday}");
+                //    }
+                //}
+                output.months.Add(month);
+
+            }
+  
             #endregion Calculate
 
             //Print Screen Output
@@ -112,17 +162,31 @@ namespace PlanManDay
                 Console.WriteLine();
                 Console.WriteLine("######################################################################");
                 Console.WriteLine();
-                Console.WriteLine($"Month : [{output.months[i].month}] , Work Day Of Month : [{output.months[i].workday}] , ALL Man Day : [{output.months[i].all_manday}]");
+                Console.WriteLine($"Month : [{output.months[i].month}] , Work Day Of Month : [{output.months[i].workday}]");
                 Console.WriteLine();
                 for (int j = 0; j < output.months[i].milestones.Count; j++)
                 {
+                    
                     Console.WriteLine($"MILESTONE ===== [{output.months[i].milestones[j].milestone}] =====");
                     for (int m = 0; m < output.months[i].milestones[j].engs.Count; m++)
                     {
                         Console.WriteLine($"Name : [{output.months[i].milestones[j].engs[m].name}] , Man Day : [{output.months[i].milestones[j].engs[m].manday}] ,Job : [{output.months[i].milestones[j].engs[m].job}]");
                     }
                 }
+                //for(int j=0;j<output.months[i].workday_engineer.Count;j++)
+                //{
+                //    Console.WriteLine($"Name {output.months[i].workday_engineer[j].name} , All Man Day {output.months[i].workday_engineer[j].all_manday}");
+
+                //}
             }
+
+            //for (int ii = 0; ii < output.months.Count; ii++)
+            //{
+            //    for (int k = 0; k < output.months[ii].workday_engineer.Count; k++)
+            //    {
+            //        Console.WriteLine($"Name {output.months[ii].workday_engineer[k].name} , All Manday {output.months[ii].workday_engineer[k].all_manday}");
+            //    }
+            //}
             Console.ReadLine();
         }
         public static List<InputJobModel> InputJobs()
@@ -139,42 +203,70 @@ namespace PlanManDay
                             milestone = "KOM",
                             date_start = new DateTime(2022, 8, 6),
                             date_stop = new DateTime(2022, 8, 8),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,8,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "DOC",
                             date_start = new DateTime(2022, 8, 9),
                             date_stop = new DateTime(2022, 8, 15),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,8,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "GEN",
                             date_start = new DateTime(2022, 8, 16),
                             date_stop = new DateTime(2022, 9, 15),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,8,1),
+                                new DateTime(2022,9,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "FAT",
                             date_start = new DateTime(2022, 9, 16),
-                            date_stop = new DateTime(2022, 9, 20),
+                            date_stop = new DateTime(2022, 9, 20),duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,9,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "TEST",
                             date_start = new DateTime(2022, 9, 17),
                             date_stop = new DateTime(2022, 9, 19),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,9,1)
+                            }
                         },
                         new INPUT_MILESTONE ()
                         {
                             milestone = "SITE",
                             date_start = new DateTime(2022, 9, 21),
                             date_stop = new DateTime(2022, 9, 25),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,9,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "HANDOVER",
                             date_start = new DateTime(2022, 9, 26),
                             date_stop = new DateTime(2022, 9, 30),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,9,1)
+                            }
                         }
                     },
                 },
@@ -188,36 +280,61 @@ namespace PlanManDay
                             milestone = "KOM",
                             date_start = new DateTime(2022, 9, 4),
                             date_stop = new DateTime(2022, 9, 5),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,9,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "DOC",
                             date_start = new DateTime(2022, 9, 6),
                             date_stop = new DateTime(2022, 9, 15),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,9,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "GEN",
                             date_start = new DateTime(2022, 9, 16),
                             date_stop = new DateTime(2022, 10, 15),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,9,1),
+                                new DateTime(2022,10,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "FAT",
                             date_start = new DateTime(2022, 10, 16),
                             date_stop = new DateTime(2022, 10, 20),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,10,1)
+                            }
                         },
                         new INPUT_MILESTONE ()
                         {
                             milestone = "SITE",
                             date_start = new DateTime(2022, 10, 21),
                             date_stop = new DateTime(2022, 10, 31),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,10,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "HANDOVER",
                             date_start = new DateTime(2022, 11, 1),
                             date_stop = new DateTime(2022, 11, 5),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,11,1)
+                            }
                         }
                     },
                 },
@@ -231,36 +348,61 @@ namespace PlanManDay
                             milestone = "KOM",
                             date_start = new DateTime(2022, 11, 15),
                             date_stop = new DateTime(2022, 11, 20),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,11,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "DOC",
                             date_start = new DateTime(2022, 11, 21),
                             date_stop = new DateTime(2022, 11, 30),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,11,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "GEN",
                             date_start = new DateTime(2022, 12, 1),
                             date_stop = new DateTime(2023, 1, 15),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,12,1),
+                                new DateTime(2023,1,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "FAT",
                             date_start = new DateTime(2023, 1, 16),
                             date_stop = new DateTime(2023, 1, 22),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2023,1,1)
+                            }
                         },
                         new INPUT_MILESTONE ()
                         {
                             milestone = "SITE",
                             date_start = new DateTime(2023, 1, 23),
                             date_stop = new DateTime(2023, 1, 25),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2023,1,1)
+                            }
                         },
                         new INPUT_MILESTONE()
                         {
                             milestone = "HANDOVER",
                             date_start = new DateTime(2023, 1, 26),
                             date_stop = new DateTime(2023, 1, 31),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2023,1,1)
+                            }
                         }
                     },
                 },
@@ -289,7 +431,7 @@ namespace PlanManDay
                     new INPUTENG_MILESTONE()
                     {
                         milestone = "GEN",
-                        manday = 5
+                        manday = 15
                     },
                     new INPUTENG_MILESTONE()
                     {
@@ -299,7 +441,7 @@ namespace PlanManDay
                     new INPUTENG_MILESTONE()
                     {
                         milestone = "TEST",
-                        manday = 8
+                        manday = 2
                     },
                     new INPUTENG_MILESTONE()
                     {

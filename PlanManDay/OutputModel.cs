@@ -11,7 +11,7 @@ namespace PlanManDay
     public class MONTHS
     {
         public int workday { get; set; }
-        public int all_manday { get; set; }
+        //public List<WorkDay_Engineer> workday_engineer { get; set; }
         public string month { get; set; }
         public List<OUTPUT_MILESTONE> milestones { get; set; }
     }
@@ -23,8 +23,14 @@ namespace PlanManDay
     }
     public class Engineers
     {
-        public string name { get; set; }
+        public string name { get; set; } = "";
         public string job { get; set; }
         public int manday { get; set; }
     }
+    //public class WorkDay_Engineer
+    //{
+    //    public string name { get; set; }
+    //    public string month { get; set; }
+    //    public int all_manday { get; set; }
+    //}
 }
