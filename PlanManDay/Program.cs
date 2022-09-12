@@ -99,22 +99,21 @@ namespace PlanManDay
                                             if (month_starts.Count > 1)
                                             {
                                                 if (last_month.milestones != null)
-                                                {
-                                                    last_manday = last_month.milestones
+                                                {                                                         
+                                                    last_manday = last_month.milestones.Where(w1=>w1.milestone == get_milestone)
                                                        .Select(s => s.engs
                                                            .Where(w => w.job == engineers[k].job && w.name == engineers[k].name)
                                                            .Select(s1 => s1.manday).FirstOrDefault())
-                                                    .LastOrDefault();
+                                                    .FirstOrDefault();
                                                 }
                                             }
-
                                             if (remain_manday >= get_manday)
                                             {
                                                 eng.manday = get_manday - last_manday;   
                                             }
                                             else
                                             { 
-                                                eng.manday = _month.Value.workday - current_manday;
+                                                eng.manday = _month.Value.workday - current_manday - last_manday;
                                             }
                                             get_engs.Add(eng);
                                         }
