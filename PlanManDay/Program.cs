@@ -49,7 +49,6 @@ namespace PlanManDay
             Dictionary<string, WorkDayOfMonthModel> has_months = new Dictionary<string, WorkDayOfMonthModel>();
             has_months = DataWorkDayOfMonth(input_jobs, holidays);
 
-            MONTHS last_month = new MONTHS();
             #region Calculate
 
             ///////   Calculate //////////////
@@ -81,14 +80,15 @@ namespace PlanManDay
                                             .Select(s => s.manday)
                                             .FirstOrDefault();  //get man day of milestone
                                         get_milestone = listMilestone[j];
-                                        
+
                                         if (get_manday > 0 && input_jobs[m].job == engineers[k].job) // check match job and more manday 
                                         {
                                             int current_manday = output_milestones
                                                 .Select(s => s.engs
                                                     .Where(w => w.name == engineers[k].name)
                                                     .Sum(s1 => s1.manday))
-                                            .Sum();
+                                                .Sum();
+
                                             int remain_manday = _month.Value.workday - current_manday;
 
                                             Engineers eng = new Engineers();
@@ -98,21 +98,22 @@ namespace PlanManDay
                                             int last_manday = 0;
                                             if (month_starts.Count > 1) // multi month in each milestone
                                             {
-                                                if (last_month.milestones != null)
-                                                {                                                         
-                                                    last_manday = last_month.milestones.Where(w1=>w1.milestone == get_milestone)
-                                                       .Select(s => s.engs
-                                                           .Where(w => w.job == engineers[k].job && w.name == engineers[k].name)
-                                                           .Select(s1 => s1.manday).Sum())
-                                                    .Sum(); // sum last month of milestone
-                                                }
+                                                last_manday = output.months
+                                                    .Select(s => s.milestones
+                                                        .Where(w => w.milestone == get_milestone)
+                                                            .SelectMany(s1 => s1.engs)
+                                                                .Where(w1 => w1.job == engineers[k].job && w1.name == engineers[k].name)
+                                                        .Select(s2 => s2.manday)
+                                                        .Sum())
+                                                    .FirstOrDefault();
+
                                             }
                                             if (remain_manday >= get_manday)
                                             {
-                                                eng.manday = get_manday - last_manday;   
+                                                eng.manday = get_manday - last_manday;
                                             }
                                             else
-                                            { 
+                                            {
                                                 eng.manday = _month.Value.workday - current_manday - last_manday;
                                             }
                                             get_engs.Add(eng);
@@ -128,16 +129,14 @@ namespace PlanManDay
                                         });
                                     }
                                 }
-                            }                           
-                        }                       
+                            }
+                        }
                     }
                 }
                 month = new MONTHS();
                 month.workday = _month.Value.workday;
                 month.month = _month.Value.month.ToString("yyyy-MM");
                 month.milestones = output_milestones;
-
-                last_month = month;
 
                 output.months.Add(month);
             }
