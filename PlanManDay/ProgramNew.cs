@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace PlanManDay
 {
-    class Program
+    class ProgramNew
     {
         static void Main(string[] args)
         {
@@ -38,13 +38,13 @@ namespace PlanManDay
 
             /////////// OUTPUT //////////////////
 
+            List<OutputNewModel> outputs_new = new List<OutputNewModel>();
+
             List<Engineers> get_engs = new List<Engineers>();
             string get_milestone = "";
             string get_job = "";
-            MONTHS month = new MONTHS();
-           // WorkDay_Engineer sum_engineer = new WorkDay_Engineer();
+
             List<OUTPUT_MILESTONE> output_milestones = new List<OUTPUT_MILESTONE>();
-            OutputModel output = new OutputModel();
 
             Dictionary<string, WorkDayOfMonthModel> has_months = new Dictionary<string, WorkDayOfMonthModel>();
             has_months = DataWorkDayOfMonth(input_jobs, holidays);
@@ -53,7 +53,7 @@ namespace PlanManDay
 
             ///////   Calculate //////////////
             foreach (var _month in has_months)//each month
-            {               
+            {
                 output_milestones = new List<OUTPUT_MILESTONE>();
                 for (int j = 0; j < listMilestone.Count; j++)  // each milestone; have engineer? , manday ? 
                 {
@@ -98,13 +98,9 @@ namespace PlanManDay
                                             int last_manday = 0;
                                             if (month_starts.Count > 1) // multi month in each milestone
                                             {
-                                                last_manday = output.months
-                                                    .Select(s => s.milestones
-                                                        .Where(w => w.milestone == get_milestone)
-                                                            .SelectMany(s1 => s1.engs)
-                                                                .Where(w1 => w1.job == engineers[k].job && w1.name == engineers[k].name)
-                                                        .Select(s2 => s2.manday)
-                                                        .Sum())
+                                                last_manday = outputs_new
+                                                    .Where(w => w.milestone == get_milestone && w.job == engineers[k].job && w.name == engineers[k].name)
+                                                    .Select(s => s.manday)
                                                     .Sum();
 
                                             }
@@ -117,8 +113,21 @@ namespace PlanManDay
                                                 eng.manday = _month.Value.workday - current_manday - last_manday;
                                             }
                                             get_engs.Add(eng);
+
+                                            // output
+                                            outputs_new.Add(new OutputNewModel()
+                                            {
+                                                month = _month.Value.month.ToString("yyyy-MM"),
+                                                workday = _month.Value.workday,
+                                                job = eng.job,
+                                                name = eng.name,
+                                                manday = eng.manday,
+                                                milestone = get_milestone
+
+                                            });
                                         }
                                     }
+
                                     bool check_milestone = output_milestones.Any(w => w.milestone == get_milestone);
                                     if (!check_milestone)
                                     {
@@ -133,35 +142,14 @@ namespace PlanManDay
                         }
                     }
                 }
-                month = new MONTHS();
-                month.workday = _month.Value.workday;
-                month.month = _month.Value.month.ToString("yyyy-MM");
-                month.milestones = output_milestones;
-
-                output.months.Add(month);
-
             }
-  
+
             #endregion Calculate
 
             //Print Screen Output
-
-            for (int i = 0; i < output.months.Count; i++)
+            for (int i = 0; i < outputs_new.Count; i++)
             {
-                Console.WriteLine();
-                Console.WriteLine("######################################################################");
-                Console.WriteLine();
-                Console.WriteLine($"Month : [{output.months[i].month}] , Work Day Of Month : [{output.months[i].workday}]");
-                Console.WriteLine();
-                for (int j = 0; j < output.months[i].milestones.Count; j++)
-                {
-                    
-                    Console.WriteLine($"MILESTONE ===== [{output.months[i].milestones[j].milestone}] =====");
-                    for (int m = 0; m < output.months[i].milestones[j].engs.Count; m++)
-                    {
-                        Console.WriteLine($"Name : [{output.months[i].milestones[j].engs[m].name}] , Man Day : [{output.months[i].milestones[j].engs[m].manday}] ,Job : [{output.months[i].milestones[j].engs[m].job}]");
-                    }
-                }
+                Console.WriteLine($"{i + 1} Month {outputs_new[i].month} , Work Day {outputs_new[i].workday} , Milestone {outputs_new[i].milestone} , Job {outputs_new[i].job} , Name {outputs_new[i].name} , Man Day {outputs_new[i].manday}");
             }
             Console.ReadLine();
         }
