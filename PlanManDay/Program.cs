@@ -105,7 +105,7 @@ namespace PlanManDay
                                                                 .Where(w1 => w1.job == engineers[k].job && w1.name == engineers[k].name)
                                                         .Select(s2 => s2.manday)
                                                         .Sum())
-                                                    .FirstOrDefault();
+                                                    .Sum();
 
                                             }
                                             if (remain_manday >= get_manday)
