@@ -149,7 +149,7 @@ namespace PlanManDay
             //Print Screen Output
             for (int i = 0; i < outputs_new.Count; i++)
             {
-                Console.WriteLine($"{i + 1} Month {outputs_new[i].month} , Work Day {outputs_new[i].workday} , Milestone {outputs_new[i].milestone} , Job {outputs_new[i].job} , Name {outputs_new[i].name} , Man Day {outputs_new[i].manday}");
+                Console.WriteLine($"{(i + 1).ToString().PadLeft(3,' ')} Month {outputs_new[i].month} , Work Day {outputs_new[i].workday} , Milestone {(outputs_new[i].milestone).PadLeft(10,' ')} , Job {outputs_new[i].job} , Name {(outputs_new[i].name).PadLeft(10, ' ')} , Man Day {(outputs_new[i].manday).ToString().PadLeft(2, ' ')}");
             }
             Console.ReadLine();
         }
