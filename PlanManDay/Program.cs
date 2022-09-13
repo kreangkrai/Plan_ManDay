@@ -96,7 +96,7 @@ namespace PlanManDay
                                             eng.job = get_job;
 
                                             int last_manday = 0;
-                                            if (month_starts.Count > 1) // multi month
+                                            if (month_starts.Count > 1) // multi month in each milestone
                                             {
                                                 if (last_month.milestones != null)
                                                 {                                                         
@@ -104,7 +104,7 @@ namespace PlanManDay
                                                        .Select(s => s.engs
                                                            .Where(w => w.job == engineers[k].job && w.name == engineers[k].name)
                                                            .Select(s1 => s1.manday).Sum())
-                                                    .Sum();
+                                                    .Sum(); // sum last month of milestone
                                                 }
                                             }
                                             if (remain_manday >= get_manday)
@@ -127,7 +127,6 @@ namespace PlanManDay
                                             engs = get_engs
                                         });
                                     }
-
                                 }
                             }                           
                         }                       
@@ -146,6 +145,7 @@ namespace PlanManDay
             #endregion Calculate
 
             //Print Screen Output
+
             for (int i = 0; i < output.months.Count; i++)
             {
                 Console.WriteLine();
