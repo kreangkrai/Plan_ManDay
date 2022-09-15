@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="InputEngineerModel.cs" />
     <Compile Include="InputJobModel.cs" />
+    <Compile Include="InputJobNewModel.cs" />
     <Compile Include="JobWorkMonthModel.cs" />
     <Compile Include="Job_MilestoneModel.cs" />
     <Compile Include="OutputModel.cs" />

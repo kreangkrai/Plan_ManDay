@@ -153,86 +153,7 @@ namespace PlanManDay
         public static List<InputJobModel> InputJobs()
         {
             List<InputJobModel> input_jobs = new List<InputJobModel>()
-            {
-                new InputJobModel()
-                {
-                    job = "J22-0001",
-                    milestones = new List<INPUT_MILESTONE>()
-                    {
-                        new INPUT_MILESTONE()
-                        {
-                            milestone = "KOM",
-                            date_start = new DateTime(2022, 8, 6),
-                            date_stop = new DateTime(2022, 8, 8),
-                            duration_months = new List<DateTime>()
-                            {
-                                new DateTime(2022,8,1),
-                            },
-                        },
-                        new INPUT_MILESTONE()
-                        {
-                            milestone = "DOC",
-                            date_start = new DateTime(2022, 8, 9),
-                            date_stop = new DateTime(2022, 8, 15),
-                            duration_months = new List<DateTime>()
-                            {
-                                new DateTime(2022,8,1),
-                            }
-                        },
-                        new INPUT_MILESTONE()
-                        {
-                            milestone = "GEN",
-                            date_start = new DateTime(2022, 8, 16),
-                            date_stop = new DateTime(2022, 10, 15),
-                            duration_months = new List<DateTime>()
-                            {
-                                new DateTime(2022,8,1),
-                                new DateTime(2022,9,1),
-                                new DateTime(2022,10,1),
-                            }
-                        },
-                        new INPUT_MILESTONE()
-                        {
-                            milestone = "FAT",
-                            date_start = new DateTime(2022, 10, 16),
-                            date_stop = new DateTime(2022, 10, 20),
-                            duration_months = new List<DateTime>()
-                            {
-                                new DateTime(2022,10,1),
-                            }
-                        },
-                        new INPUT_MILESTONE()
-                        {
-                            milestone = "TEST",
-                            date_start = new DateTime(2022, 10, 21),
-                            date_stop = new DateTime(2022, 10, 22),
-                            duration_months = new List<DateTime>()
-                            {
-                                new DateTime(2022,10,1),
-                            }
-                        },
-                        new INPUT_MILESTONE()
-                        {
-                            milestone = "SITE",
-                            date_start = new DateTime(2022, 10, 23),
-                            date_stop = new DateTime(2022, 10, 25),
-                            duration_months = new List<DateTime>()
-                            {
-                                new DateTime(2022,10,1),
-                            }
-                        },
-                        new INPUT_MILESTONE()
-                        {
-                            milestone = "HANDOVER",
-                            date_start = new DateTime(2022, 10, 26),
-                            date_stop = new DateTime(2022, 10, 31),
-                            duration_months = new List<DateTime>()
-                            {
-                                new DateTime(2022,10,1),
-                            }
-                        }
-                    },
-                },
+            {               
                 new InputJobModel()
                 {
                     job = "J22-9999",
@@ -255,7 +176,7 @@ namespace PlanManDay
                             date_stop = new DateTime(2022, 9, 15),
                             duration_months = new List<DateTime>()
                             {
-                                new DateTime(2022,8,1),
+                                new DateTime(2022,9,1),
                             }
                         },
                         new INPUT_MILESTONE()
@@ -361,7 +282,7 @@ namespace PlanManDay
                         {
                             milestone = "HANDOVER",
                             date_start = new DateTime(2023, 1, 26),
-                            date_stop = new DateTime(2023, 1, 31),
+                            date_stop = new DateTime(2023, 1, 28),
                             duration_months = new List<DateTime>()
                             {
                                 new DateTime(2023,1,1),
@@ -369,7 +290,88 @@ namespace PlanManDay
                         }
                     },
                 },
+                new InputJobModel()
+                {
+                    job = "J22-0001",
+                    milestones = new List<INPUT_MILESTONE>()
+                    {
+                        new INPUT_MILESTONE()
+                        {
+                            milestone = "KOM",
+                            date_start = new DateTime(2022, 8, 6),
+                            date_stop = new DateTime(2022, 8, 8),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,8,1),
+                            },
+                        },
+                        new INPUT_MILESTONE()
+                        {
+                            milestone = "DOC",
+                            date_start = new DateTime(2022, 8, 9),
+                            date_stop = new DateTime(2022, 8, 15),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,8,1),
+                            }
+                        },
+                        new INPUT_MILESTONE()
+                        {
+                            milestone = "GEN",
+                            date_start = new DateTime(2022, 8, 16),
+                            date_stop = new DateTime(2022, 10, 15),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,8,1),
+                                new DateTime(2022,9,1),
+                                new DateTime(2022,10,1),
+                            }
+                        },
+                        new INPUT_MILESTONE()
+                        {
+                            milestone = "FAT",
+                            date_start = new DateTime(2022, 10, 16),
+                            date_stop = new DateTime(2022, 10, 20),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,10,1),
+                            }
+                        },
+                        new INPUT_MILESTONE()
+                        {
+                            milestone = "TEST",
+                            date_start = new DateTime(2022, 10, 21),
+                            date_stop = new DateTime(2022, 10, 22),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,10,1),
+                            }
+                        },
+                        new INPUT_MILESTONE()
+                        {
+                            milestone = "SITE",
+                            date_start = new DateTime(2022, 10, 23),
+                            date_stop = new DateTime(2022, 10, 25),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,10,1),
+                            }
+                        },
+                        new INPUT_MILESTONE()
+                        {
+                            milestone = "HANDOVER",
+                            date_start = new DateTime(2022, 10, 26),
+                            date_stop = new DateTime(2022, 10, 31),
+                            duration_months = new List<DateTime>()
+                            {
+                                new DateTime(2022,10,1),
+                            }
+                        }
+                    },
+                },
             };
+
+            input_jobs = SortInputJob(input_jobs);
             return input_jobs;
         }
         public static List<InputEngineerModel> InputEngineer()
@@ -734,6 +736,20 @@ namespace PlanManDay
                             job = input_jobs[j].job,
                         });
                     }
+                    else if (i == diffMonth && j == input_jobs.Count - 1) // last Month stop 
+                    {
+                        var lastDayOfMonth = DateTime.DaysInMonth(start.AddMonths(i).Year, start.AddMonths(i).Month);
+                        int workday = Weekdays(
+                            new DateTime(start.AddMonths(i).Year, start.AddMonths(i).Month, 1),
+                            new DateTime(start.AddMonths(i).Year, start.AddMonths(i).Month, stop.Day),
+                            holidays);
+                        workMonths.Add(new workMonth()
+                        {
+                            month = new DateTime(start.AddMonths(i).Year, start.AddMonths(i).Month, 1),
+                            workday = workday,
+                            job = input_jobs[j].job,
+                        });
+                    }
                     else
                     {
                         var lastDayOfMonth = DateTime.DaysInMonth(start.AddMonths(i).Year, start.AddMonths(i).Month);
@@ -779,7 +795,7 @@ namespace PlanManDay
         public static int Weekdays(DateTime dtmStart, DateTime dtmEnd, List<DateTime> holidays)
         {
             int count_holiday = 0;
-            for (DateTime d = dtmStart; d != dtmEnd; d = d.AddDays(1))
+            for (DateTime d = dtmStart; d <= dtmEnd; d = d.AddDays(1))
             {
                 for (int j = 0; j < holidays.Count; j++)
                 {
@@ -798,6 +814,44 @@ namespace PlanManDay
                 return (((tSpan.Days / 7) * 5) + Math.Max((Math.Min((dowEnd + 1), 6) - dowStart), 0)) - count_holiday;
             }
             return (((tSpan.Days / 7) * 5) + Math.Min((dowEnd + 6) - Math.Min(dowStart, 6), 5)) - count_holiday;
+        }
+        public static List<InputJobModel> SortInputJob(List<InputJobModel> input_jobs)
+        {
+            if (input_jobs.Count > 1)
+            {
+                List<InputJobNewModel> new_input = new List<InputJobNewModel>();
+                for (int i = 0; i < input_jobs.Count; i++)
+                {
+                    var milestones = input_jobs[i].milestones.ToList();
+                    for (int j = 0; j < milestones.Count; j++)
+                    {
+                        new_input.Add(new InputJobNewModel()
+                        {
+                            job = input_jobs[i].job,
+                            milestone = milestones[j].milestone,
+                            date_start = milestones[j].date_start,
+                            date_stop = milestones[j].date_stop,
+                            duration_months = milestones[j].duration_months,
+                        });
+                    }
+                }
+                // sort date start , job
+                new_input = new_input.OrderBy(o => o.date_start).ThenBy(t => t.job).ToList();
+
+                // reverse
+                input_jobs = new_input.GroupBy(g => g.job).Select(s => new InputJobModel()
+                {
+                    job = s.Key,
+                    milestones = s.Where(w => w.job == s.Key).Select(s1 => new INPUT_MILESTONE()
+                    {
+                        milestone = s1.milestone,
+                        date_start = s1.date_start,
+                        date_stop = s1.date_stop,
+                        duration_months = s1.duration_months,
+                    }).ToList(),
+                }).ToList();
+            }
+            return input_jobs;
         }
     }
 }
